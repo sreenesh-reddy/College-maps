@@ -12,22 +12,22 @@ interface ProgramData{
 
 const Additional: React.FC = () => {
   const router = useRouter();
-  const [collegeName, setCollegeName] = useState<string | null>(null);
+  const [collegeCode, setCollegeCode] = useState<string | null>(null);
   const [collegeDetails, setCollegeDetails] = useState<CollegeData | null>(null);
   const [programDetails, setprogramDetails] = useState<ProgramData[] | null>(null);
 
 
-  // Get college name from query
+  // Get college code from query
   useEffect(() => {
-    if (router.isReady && router.query.college_name) {
-      setCollegeName(router.query.college_name as string);
-      console.log("College Name from Query:", router.query.college_name);
+    if (router.isReady && router.query.aisheCode) {
+      setCollegeCode(router.query.aisheCode as string);
+      console.log("College Code from Query:", router.query.aisheCode);
     }
-  }, [router.isReady, router.query]);
+  }, [router.isReady, router.query.aisheCode]);
 
   // Fetch CSV and find college details
   useEffect(() => {
-    if (!collegeName) return; // Wait for collegeName to be set
+    if (!collegeCode) return; // Wait for collegeCode to be set
 
     const fetchCollegeData = async () => {
       try {
@@ -44,7 +44,7 @@ const Additional: React.FC = () => {
             const data: ProgramData[] = result.data as ProgramData[];
         
             // Filter all matching programs
-            const foundPrograms = data.filter((program) => program["college"] === collegeName);
+            const foundPrograms = data.filter((program) => program["AISHE ID"] === collegeCode);
         
             console.log("Matching Program Details:", foundPrograms);
             setprogramDetails(foundPrograms.length > 0 ? foundPrograms : null);
@@ -57,8 +57,8 @@ const Additional: React.FC = () => {
           complete: (result) => {
             const data: CollegeData[] = result.data as CollegeData[];
 
-            // Find college details using state collegeName
-            const foundCollege = data.find((college) => college["Name of the College"] === collegeName);
+            // Find college details using state collegeCode
+            const foundCollege = data.find((college) => college["AISHE ID"] === collegeCode);
             setCollegeDetails(foundCollege || null);
           },
         });
@@ -68,7 +68,7 @@ const Additional: React.FC = () => {
     };
 
     fetchCollegeData();
-  }, [collegeName]); // Run when collegeName is updated
+  }, [collegeCode]); // Run when collegeCode is updated
 
   return (
     <div>
@@ -133,7 +133,7 @@ const Additional: React.FC = () => {
 )}
           </div>
       ) : (
-        <p>{collegeName ? "College not found." : "Loading..."}</p>
+        <p>{collegeCode ? "College not found." : "Loading..."}</p>
       )}
     </div>
   );

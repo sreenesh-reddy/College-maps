@@ -36,7 +36,6 @@ const CourseList = () => {
             (e.currentTarget as HTMLElement).style.color = "gray";
           }}>
             {course}
-            console.log(categories)
           </li>
         ))}
       </ul>
